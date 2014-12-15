@@ -10,7 +10,7 @@ class Model(object):
         return Model.dbMap.find_one(query)
 
     @staticmethod
-    def find(query={}, limit=-1):
+    def find(query={}, limit=0):
         # processing here
         return Model.dbMap.find(query).limit(limit)
 

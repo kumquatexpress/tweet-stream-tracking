@@ -22,6 +22,14 @@ with app.app_context():
 api = TwitterAPI(db["consumer_key"], db["consumer_secret"],
     db["access_token_key"], db["access_token_secret"])
 
+@app.route("/")
+def main_page():
+    return main_handler.index()
+
+@app.route("/tweets")
+def tweets():
+    return main_handler.tweets()
+
 if __name__ == '__main__':
     boundbox = ",".join(db["twitter_boundbox"].split(" "))
     query = db["twitter_query"].split()
@@ -31,11 +39,3 @@ if __name__ == '__main__':
     
     app.run()
 
-
-@app.route("/")
-def main_page():
-    return main_handler.index()
-
-@app.route("/tweets")
-def tweets():
-    return main_handler.tweets()
