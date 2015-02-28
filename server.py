@@ -9,6 +9,7 @@ import threading
 import yaml
 
 db = yaml.load(open("config/db.yaml"))
+search = yaml.load(open("config/search.yaml"))
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = db["name"]
@@ -31,10 +32,8 @@ def tweets():
     return main_handler.tweets()
 
 if __name__ == '__main__':
-    boundbox = ",".join(db["twitter_boundbox"].split(" "))
-    query = db["twitter_query"].split()
-    print ("bounding box of %s, querying %s" % (boundbox, query))    
-    t = threading.Thread(target=models.Tweet.start_stream, args=(api, boundbox, query, ))
+    hashtags = search["queries"]
+    t = threading.Thread(target=models.Tweet.start_stream, args=(api, hashtags, ))
     t.start()
     
     app.run()

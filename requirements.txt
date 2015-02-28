@@ -4,3 +4,4 @@ code
 gunicorn
 pyyaml
 TwitterAPI
+requests

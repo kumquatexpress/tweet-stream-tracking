@@ -32,25 +32,25 @@ class Tweet(Model):
     MAX_NUM = 10000
 
     @staticmethod
-    def start_stream(api, boundbox, query):
+    def start_stream(api, hashtags):
         try:
-            r = api.request('statuses/filter', {'locations': boundbox})
+            r = api.request('statuses/filter', {'track': hashtags})
             for item in r:
-                if len([q for q in query if q in item["text"].lower().split()]) == len(query):
-                    obj = {
-                    "text": item['text'],
-                    "created_at": item["created_at"],
-                    "geo": item["geo"],
-                    "place": item["place"],
-                    "coordinates": item["coordinates"],
-                    "keywords": query
-                    }
-                    if Tweet.count() < Tweet.MAX_NUM:
-                        Tweet.insert(obj)
-                    else:
-                        Tweet.delete(Tweet.find().sort({"_id":1}).limit(1))
-                        Tweet.insert(obj)
+                obj = {
+                "text": item['text'],
+                "created_at": item["created_at"],
+                "geo": item["geo"],
+                "place": item["place"],
+                "coordinates": item["coordinates"],
+                "user": item["user"],
+                "keywords": hashtags
+                }
+                if Tweet.count() < Tweet.MAX_NUM:
+                    Tweet.insert(obj)
+                else:
+                    Tweet.delete(Tweet.find().sort({"_id":1}).limit(1))
+                    Tweet.insert(obj)
         except ProtocolError:
             print "Encountered a connection error, incomplete read."
         finally:
-            Tweet.start_stream(api, boundbox, query)
+            Tweet.start_stream(api, hashtags)
